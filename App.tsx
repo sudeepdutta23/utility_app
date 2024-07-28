@@ -5,16 +5,17 @@
  * @format
  */
 
-import React, {useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
+import React, { useReducer } from 'react';
 import {
   DefaultTheme,
   Provider as PaperProvider,
-  Button,
 } from 'react-native-paper';
-import {NavigationContainer} from '@react-navigation/native';
-import Login from './src/screens/Login';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import BottomTabNavigator from './src/component/BottomNavigator';
+import { LoginReducer } from './src/context/login/LoginReducer';
+import { initialValues, LoginContextProvider } from './src/context/login/LoginContext';
+import StackNavigator from './src/component/StackNavigator';
 
 const theme = {
   ...DefaultTheme,
@@ -29,17 +30,17 @@ const theme = {
 const Stack = createStackNavigator();
 
 function App(): React.JSX.Element {
+
+  const [state, dispatch] = useReducer(LoginReducer, initialValues);
+
   return (
     <PaperProvider theme={theme}>
+      <LoginContextProvider.Provider value={{ state, dispatch }}>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="login">
-            <Stack.Screen
-              name="login"
-              component={Login}
-              options={{headerShown: false}}
-            />
-          </Stack.Navigator>
+          {!state?.isLoggedIn ? <StackNavigator /> :
+            <BottomTabNavigator />}
         </NavigationContainer>
+      </LoginContextProvider.Provider>
     </PaperProvider>
   );
 }

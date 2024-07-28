@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import { useNavigation } from '@react-navigation/native';
+import React, { useContext, useReducer, useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
-import { Button, Checkbox, TextInput } from 'react-native-paper';
+import { Button, Checkbox, TextInput, IconButton, MD3Colors } from 'react-native-paper';
 import Svg, { Path } from 'react-native-svg';
+import { LoginContextProvider } from '../context/login/LoginContext';
 
 const Wave = () => {
     return (
@@ -19,15 +21,35 @@ const Wave = () => {
     );
 };
 
+const RoundIcon = ({ navigate }: any) =>(<IconButton
+    icon="chevron-left"
+    mode='contained'
+    style={styles.roundIcon}
+    iconColor={MD3Colors.primary20}
+    size={40}
+    onPress={() => navigate("welcome")}
+  />)
+
 const Login = (): React.JSX.Element => {
+    const { navigate } = useNavigation<any>();
+
+    const { dispatch }: any = useContext(LoginContextProvider);
+    
     const [showPassword, setShowPassword] = useState(true);
+
+    const handleLogin = () =>{
+        dispatch({ type: "setLogin" })
+        navigate("dashboard")
+    }
+
     return (
         <View style={styles.mainContainer}>
             <Wave />
+            <RoundIcon navigate={navigate} />
             <Text style={styles.welcomeText}>Welcome Back</Text>
             <Text style={styles.loginText}>Login to your account</Text>
             <View style={styles.space} />
-            <TextInput placeholder="Full Name" mode='outlined' style={styles.textInput} left={<TextInput.Icon icon='lock' />} />
+            <TextInput placeholder="Full Name" mode='outlined' style={styles.textInput} left={<TextInput.Icon icon='human' />} />
             <TextInput placeholder="Password" mode='outlined' style={styles.textInput} secureTextEntry={showPassword} left={<TextInput.Icon icon='lock' />} right={<TextInput.Icon onPress={() => setShowPassword(!showPassword)} icon={showPassword ? `eye` : `eye-off`} />} />
             <View style={styles.textBottomContainer}>
                 <View style={{ flexDirection: "row" }}>
@@ -37,9 +59,9 @@ const Login = (): React.JSX.Element => {
                 <Text style={styles.forgotPassText}>Forgot Password?</Text>
             </View>
             <View style={styles.space} />
-            <Button style={styles.btn} mode="contained" onPress={() => console.log("Press me")}> Login </Button>
+            <Button style={styles.btn} mode="contained" onPress={handleLogin}> Login </Button>
             <View style={styles.btmContainer}>
-                <Text style={styles.remembermeTxt}>Don't have account? </Text><Text style={styles.signupText}>Sign up</Text>
+                <Text style={styles.remembermeTxt}>Don't have account? </Text><Text onPress={()=>navigate("register")} style={styles.signupText}>Sign up</Text>
             </View>
         </View>
     )
@@ -49,8 +71,9 @@ export default Login
 
 const styles = StyleSheet.create({
     mainContainer: {
-        flex: 1,
         backgroundColor: '#fff',
+        position: "absolute",
+        height: "100%"
     },
     container: {
         backgroundColor: '#fff',
@@ -69,7 +92,7 @@ const styles = StyleSheet.create({
         color: "green",
         fontSize: 30,
         fontWeight: "900",
-        marginTop: 60
+        marginTop: 20
     },
     loginText: {
         textAlign: "center",
@@ -92,12 +115,11 @@ const styles = StyleSheet.create({
     },
     textBottomContainer: { flex: 1, flexDirection: "row", justifyContent: "space-between", marginHorizontal: 20 },
     btn: {
-        bottom: 90,
+        bottom: 80,
         marginHorizontal: 20,
         borderRadius: 20
     },
     btmContainer: {
-        // flex: 1,
         justifyContent: "center",
         flexDirection: "row",
         bottom: 70,
@@ -109,5 +131,11 @@ const styles = StyleSheet.create({
     signupText: {
         color: "darkgreen",
         fontWeight: "900"
+    },
+    roundIcon: {
+        position: "relative",
+        top:-180,
+        left: 10,
+        zIndex: 1
     }
 });
