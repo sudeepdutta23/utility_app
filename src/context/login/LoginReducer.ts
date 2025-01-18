@@ -1,12 +1,12 @@
-import { initialValues } from "./LoginContext";
+import { initialValues } from './LoginContext';
 
-export const LoginReducer = (state: any, action: any) =>{
-    switch (action.type) {
-        case "setLogin":
-            return {...state, isLoggedIn: true };
-        case "clearData":
-            return initialValues;
-        default:
-            return state;
-    }
-}
+export const LoginReducer = (state: any, action: any) => {
+  switch (action.type) {
+    case 'setLogin':
+      return { ...state, isLoggedIn: true };
+    case 'clearData':
+      return initialValues;
+    default:
+      return state;
+  }
+};

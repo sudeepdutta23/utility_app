@@ -1,141 +1,153 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useContext, useReducer, useState } from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
-import { Button, Checkbox, TextInput, IconButton, MD3Colors } from 'react-native-paper';
-import Svg, { Path } from 'react-native-svg';
-import { LoginContextProvider } from '../context/login/LoginContext';
+import React, {useState} from 'react';
+import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {Button, Checkbox} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import PasswordInput from '../component/PasswordInput';
+import TextInput from '../component/TextInput';
+import {useNavigation} from '@react-navigation/native';
+import {PicturedHeading} from '../component/PicturedHeading';
 
-const Wave = () => {
-    return (
-        <View style={styles.container}>
-            <Image
-                source={require("../../assets/pexels-photo-807598.jpeg")}
-                style={styles.image}
-            />
-            <View style={styles.wavesContainer}>
-                <Svg width="100%" height="100">
-                    <Path d="M0,25 Q100,90 200,25 T450,25 L450,100 L0,100 Z" fill="white" />
-                </Svg>
-            </View>
-        </View>
-    );
-};
-
-const RoundIcon = ({ navigate }: any) =>(<IconButton
-    icon="chevron-left"
-    mode='contained'
-    style={styles.roundIcon}
-    iconColor={MD3Colors.primary20}
-    size={40}
-    onPress={() => navigate("welcome")}
-  />)
+const socialIcons = [
+  {name: 'facebook', color: '#3b5998'},
+  {name: 'twitter', color: '#1da1f2'},
+  {name: 'google', color: '#db4437'},
+];
 
 const Login = (): React.JSX.Element => {
-    const { navigate } = useNavigation<any>();
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
+  const {navigate} = useNavigation<any>();
 
-    const { dispatch }: any = useContext(LoginContextProvider);
-    
-    const [showPassword, setShowPassword] = useState(true);
+  return (
+    <View style={styles.container}>
+      <PicturedHeading />
 
-    const handleLogin = () =>{
-        dispatch({ type: "setLogin" })
-        navigate("dashboard")
-    }
+      <Text style={styles.loginText}>Login to your account</Text>
 
-    return (
-        <View style={styles.mainContainer}>
-            <Wave />
-            <RoundIcon navigate={navigate} />
-            <Text style={styles.welcomeText}>Welcome Back</Text>
-            <Text style={styles.loginText}>Login to your account</Text>
-            <View style={styles.space} />
-            <TextInput placeholder="Full Name" mode='outlined' style={styles.textInput} left={<TextInput.Icon icon='human' />} />
-            <TextInput placeholder="Password" mode='outlined' style={styles.textInput} secureTextEntry={showPassword} left={<TextInput.Icon icon='lock' />} right={<TextInput.Icon onPress={() => setShowPassword(!showPassword)} icon={showPassword ? `eye` : `eye-off`} />} />
-            <View style={styles.textBottomContainer}>
-                <View style={{ flexDirection: "row" }}>
-                <Checkbox status='unchecked' />
-                <Text style={styles.remembermeTxt}>Remember me</Text>
-                </View>
-                <Text style={styles.forgotPassText}>Forgot Password?</Text>
-            </View>
-            <View style={styles.space} />
-            <Button style={styles.btn} mode="contained" onPress={handleLogin}> Login </Button>
-            <View style={styles.btmContainer}>
-                <Text style={styles.remembermeTxt}>Don't have account? </Text><Text onPress={()=>navigate("register")} style={styles.signupText}>Sign up</Text>
-            </View>
+      <View style={styles.socialIconsContainer}>
+        {socialIcons.map(icon => (
+          <TouchableOpacity style={styles.iconButton} key={icon.name}>
+            <Icon name={icon.name} size={24} color={icon.color} />
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <Text style={styles.orText}>or use your email account</Text>
+
+      <TextInput
+        value={email}
+        onChangeText={(text: string) => setEmail(text)}
+        placeholder="Username"
+      />
+      <PasswordInput
+        value={password}
+        onChangeText={(text: string) => setPassword(text)}
+        placeholder="Password"
+      />
+
+      <View style={styles.rowContainer}>
+        <View style={styles.checkboxContainer}>
+          <Checkbox
+            status={rememberMe ? 'checked' : 'unchecked'}
+            onPress={() => setRememberMe(!rememberMe)}
+          />
+          <Text>Remember me</Text>
         </View>
-    )
-}
+        <View style={styles.forgotUserORPassTextContainer}>
+          <Text>Forgot</Text>
+          <TouchableOpacity>
+            <Text
+              style={styles.forgotText}
+              onPress={() => navigate('forgotUser')}>
+              {' '}
+              User
+            </Text>
+          </TouchableOpacity>
+          <Text> Or</Text>
+          <TouchableOpacity>
+            <Text
+              style={styles.forgotText}
+              onPress={() => navigate('forgotPassword')}>
+              {' '}
+              Password?
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
 
-export default Login
+      <Button mode="contained" style={styles.loginButton} onPress={() => {}}>
+        LOGIN
+      </Button>
+
+      <View style={styles.registerContainer}>
+        <Text>Don&apos;t have an account?</Text>
+        <TouchableOpacity onPress={() => navigate('register')}>
+          <Text style={styles.registerText}> Register here</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+export default Login;
 
 const styles = StyleSheet.create({
-    mainContainer: {
-        backgroundColor: '#fff',
-        position: "absolute",
-        height: "100%"
-    },
-    container: {
-        backgroundColor: '#fff',
-    },
-    image: {
-        width: 420,
-        height: 200,
-    },
-    wavesContainer: {
-        width: '100%',
-        position: 'absolute',
-        bottom: 0,
-    },
-    welcomeText: {
-        textAlign: "center",
-        color: "green",
-        fontSize: 30,
-        fontWeight: "900",
-        marginTop: 20
-    },
-    loginText: {
-        textAlign: "center",
-        color: "darkgreen",
-    },
-    textInput: {
-        marginHorizontal: 20,
-        marginVertical: 10
-    },
-    space: {
-        marginTop: 80
-    },
-    remembermeTxt: {
-        color: "green",
-        marginTop: 7
-    },
-    forgotPassText: {
-        color: "darkgreen",
-        fontWeight: "900"
-    },
-    textBottomContainer: { flex: 1, flexDirection: "row", justifyContent: "space-between", marginHorizontal: 20 },
-    btn: {
-        bottom: 80,
-        marginHorizontal: 20,
-        borderRadius: 20
-    },
-    btmContainer: {
-        justifyContent: "center",
-        flexDirection: "row",
-        bottom: 70,
-        alignItems: "center"
-    },
-    btmText: {
-        color: "green",
-    },
-    signupText: {
-        color: "darkgreen",
-        fontWeight: "900"
-    },
-    roundIcon: {
-        position: "relative",
-        top:-180,
-        left: 10,
-        zIndex: 1
-    }
+  container: {
+    flex: 1,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingBottom: 20,
+    backgroundColor: '#f5f5f5',
+  },
+  loginText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  socialIconsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 10,
+  },
+  iconButton: {
+    marginHorizontal: 10,
+  },
+  orText: {
+    textAlign: 'center',
+    marginVertical: 10,
+    color: 'gray',
+  },
+  input: {
+    marginBottom: 10,
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  forgotUserORPassTextContainer: {
+    flex: 0.9,
+    flexDirection: 'row',
+  },
+  forgotText: {
+    color: '#4CAF50',
+  },
+  loginButton: {
+    marginVertical: 20,
+    borderRadius: 25,
+  },
+  registerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  registerText: {
+    color: '#4CAF50',
+  },
 });

@@ -1,12 +1,12 @@
-import React from 'react'
-import { Text, View } from 'react-native'
+import React from 'react';
+import { Text, View } from 'react-native';
 
 const Account = () => {
   return (
     <View>
-    <Text style={{ color: "black" }}>Account</Text>
+      <Text style={{ color: 'black' }}>Account</Text>
     </View>
-  )
-}
+  );
+};
 
-export default Account
+export default Account;

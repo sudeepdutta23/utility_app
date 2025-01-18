@@ -1,12 +1,12 @@
-import React from 'react'
-import { Text, View } from 'react-native'
+import React from 'react';
+import { Text, View } from 'react-native';
 
 const Usage = () => {
   return (
     <View>
-    <Text style={{ color: "black" }}>Usage</Text>
+      <Text style={{ color: 'black' }}>Usage</Text>
     </View>
-  )
-}
+  );
+};
 
-export default Usage
+export default Usage;
